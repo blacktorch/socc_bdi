@@ -3,3 +3,4 @@
 *.rcl
 *.class
 *.jar
+.idea/*
