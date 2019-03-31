@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="socc_bdi:jar">
+    <output-path>$PROJECT_DIR$/socc_bdi/bin</output-path>
+    <root id="archive" name="socc_bdi.jar">
+      <element id="module-output" name="socc_bdi" />
+    </root>
+  </artifact>
+</component>
