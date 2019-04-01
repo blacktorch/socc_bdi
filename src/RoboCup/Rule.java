@@ -9,9 +9,9 @@ public class Rule {
     private static final String THEN = "_THEN_";
     private static final String IF = "IF_";
     private static final String AND = "_AND_";
-    private PlayView.Environments condition;
+    private PlayView.PlayerView condition;
     private Action.Actions action;
-    private List<PlayView.Environments> preConditions;
+    private List<PlayView.PlayerView> preConditions;
 
     public Rule(String rule){
         this.rule = rule;
@@ -19,9 +19,9 @@ public class Rule {
         this.condition = null;
         this.action = null;
         try {
-            if (PlayView.Environments.valueOf(literal[1]) instanceof PlayView.Environments){
+            if (PlayView.PlayerView.valueOf(literal[1]) instanceof PlayView.PlayerView){
                 hasAction = false;
-                condition = PlayView.Environments.valueOf(literal[1]);
+                condition = PlayView.PlayerView.valueOf(literal[1]);
                 return;
             }
         }
@@ -47,8 +47,8 @@ public class Rule {
         preConditions = new ArrayList<>();
         try {
             for (String condition : conditions){
-                if (PlayView.Environments.valueOf(condition) instanceof PlayView.Environments){
-                    preConditions.add(PlayView.Environments.valueOf(condition));
+                if (PlayView.PlayerView.valueOf(condition) instanceof PlayView.PlayerView){
+                    preConditions.add(PlayView.PlayerView.valueOf(condition));
                 }
             }
         }
@@ -57,7 +57,7 @@ public class Rule {
         }
     }
 
-    public List<PlayView.Environments> getPreConditions(){
+    public List<PlayView.PlayerView> getPreConditions(){
         return preConditions;
     }
 
@@ -65,7 +65,7 @@ public class Rule {
         return hasAction;
     }
 
-    public PlayView.Environments getCondition(){
+    public PlayView.PlayerView getCondition(){
         return condition;
     }
 
