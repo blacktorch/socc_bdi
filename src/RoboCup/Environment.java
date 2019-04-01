@@ -65,12 +65,15 @@ public class Environment {
         }
 
         brain.getPerceptions().clear();
+        String perceptionID = String.valueOf(brain.getRunNumber());
 
         for(PlayView.PlayerView condition : PlayView.PlayerView.values()){
             if (perception.getIsPerceived().get(condition)){
                 brain.getPerceptions().add(Literal.parseLiteral(condition.name().toLowerCase()));
             }
         }
+
+        brain.getPerceptions().add(Literal.parseLiteral("id("+ perceptionID + ")"));
 
     }
 }

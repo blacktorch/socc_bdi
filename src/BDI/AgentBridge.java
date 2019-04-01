@@ -9,7 +9,6 @@ import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,9 @@ public class AgentBridge extends AgArch {
     PlayView playView;
     private Brain brain;
     private String agentName;
+    private boolean isNewPerception;
+    private List<Literal> previousPerceptions;
+    private boolean isActionDone;
 
     public AgentBridge(Brain brain) {
         // set up the Jason agent
@@ -38,6 +40,7 @@ public class AgentBridge extends AgArch {
             ag.initAg("robocup.asl");
             playView = new PlayView(brain);
             this.brain = brain;
+            previousPerceptions = new ArrayList<>();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Init error", e);
         }
@@ -53,8 +56,8 @@ public class AgentBridge extends AgArch {
                     sleep();
                 }
             }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Run error", e);
+        } catch (NullPointerException e) {
+            System.out.println("Waiting for next reasoning cycle...");
         }
     }
 
@@ -65,7 +68,18 @@ public class AgentBridge extends AgArch {
     // this method just add some perception for the agent
     @Override
     public List<Literal> perceive() {
-        List<Literal> l = new ArrayList<>(brain.getPerceptions());
+        ArrayList<Literal> l = new ArrayList<>(brain.getPerceptions());
+        if (l.equals(previousPerceptions)){
+            if (isActionDone) {
+                isNewPerception = false;
+                System.out.println("Old Perception");
+            }
+        } else {
+            isNewPerception = true;
+            isActionDone = false;
+            System.out.println("New Perception");
+        }
+        previousPerceptions = (List<Literal>) l.clone();
 
         return l;
     }
@@ -76,15 +90,10 @@ public class AgentBridge extends AgArch {
         getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
 
         Structure actionTerm = action.getActionTerm();
-        Term dashToBall = Literal.parseLiteral("dash_towards_ball");
-        Term lookAround = Literal.parseLiteral("look_around");
+        System.out.println(actionTerm.toString());
 
-        if (actionTerm.equals(dashToBall)){
-            brain.updateAction(Action.Actions.valueOf(dashToBall.toString().toUpperCase()), true);
-        } else if (actionTerm.equals(lookAround)){
-            brain.updateAction(Action.Actions.valueOf(lookAround.toString().toUpperCase()), true);
-        }
-
+        brain.updateAction(Action.Actions.valueOf(actionTerm.toString().toUpperCase()), true);
+        isActionDone = true;
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
@@ -92,7 +101,7 @@ public class AgentBridge extends AgArch {
 
     @Override
     public boolean canSleep() {
-        return true;
+        return !isNewPerception;
     }
 
     @Override
@@ -103,7 +112,7 @@ public class AgentBridge extends AgArch {
     // a very simple implementation of sleep
     public void sleep() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {}
     }
 

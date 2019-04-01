@@ -32,7 +32,9 @@ public class Action {
             actor.turn(ball.direction);
         } else {
             if (!(player != null && player.getTeamName().equals(team) && player.distance <= 6)){
-                actor.dash(10 * ball.distance);
+                if (ball != null) {
+                    actor.dash(10 * ball.distance);
+                }
             }
         }
     }

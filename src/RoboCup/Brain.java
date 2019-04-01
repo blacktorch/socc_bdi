@@ -96,7 +96,9 @@ public class Brain extends Thread implements SensorInput {
             // sleep one step to ensure that we will not send
             // two commands in one cycle.
             environment.updatePerceptions();
-            action.perform();
+            if (actionUpdated){
+                action.perform();
+            }
 
             try {
                 Thread.sleep(2 * SoccerParams.simulator_step);
