@@ -15,7 +15,7 @@
 
 //  Modified by:	Edgar Acosta
 //  Date:		March 5, 2008
-package robocup;
+package main;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;

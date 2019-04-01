@@ -16,7 +16,7 @@
 //	command to player
 //
 //***************************************************************************
-package robocup;
+package main;
 interface SendCommand
 {
     // This function sends move command to the server

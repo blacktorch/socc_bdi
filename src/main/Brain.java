@@ -9,7 +9,7 @@
 //    Date:             March 4, 2008
 //    Modified by:      Chidiebere Onyedinma
 //    Date:             March 2, 2019
-package robocup;
+package main;
 
 import bdi.AgentBridge;
 import jason.asSyntax.Literal;
@@ -51,7 +51,7 @@ public class Brain extends Thread implements SensorInput {
         this.perception = perception;
         this.runNumber = 0;
         perceptions = new ArrayList<>();
-        actionToPerform = Action.Actions.DO_NOTHING;
+        actionToPerform = Action.Actions.do_nothing;
         actionUpdated = false;
 
         switch (number){
@@ -86,6 +86,8 @@ public class Brain extends Thread implements SensorInput {
 
         Environment environment = new Environment(perception, this);
         Action action = new Action(this);
+
+
 
         new Thread(() -> {
             AgentBridge agent = new AgentBridge(Brain.this);

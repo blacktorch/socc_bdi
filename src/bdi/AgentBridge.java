@@ -1,31 +1,31 @@
-package BDI;
+package bdi;
 
-import RoboCup.Action;
-import RoboCup.Brain;
-import RoboCup.PlayView;
+import main.Action;
+import main.Brain;
+import main.PlayView;
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
 
+import javax.annotation.Resources;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Example of an agent that only uses Jason BDI engine. It runs without all
+ * Example of an agent that only uses Jason bdi engine. It runs without all
  * Jason IDE stuff. (see Jason FAQ for more information about this example)
  *
  * The class must extend AgArch class to be used by the Jason engine.
  */
 public class AgentBridge extends AgArch {
-
+    private static final String jasonFileName = "robocup.asl";
     private static Logger logger = Logger.getLogger(AgentBridge.class.getName());
-    PlayView playView;
+    private PlayView playView;
     private Brain brain;
     private String agentName;
 
@@ -35,12 +35,28 @@ public class AgentBridge extends AgArch {
         try {
             Agent ag = new Agent();
             new TransitionSystem(ag, null, null, this);
-            ag.initAg("robocup.asl");
+            ag.initAg(loadBeliefBase());
             playView = new PlayView(brain);
             this.brain = brain;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Init error", e);
+            logger.log(Level.SEVERE, "Failed to initialize AgentSpeak.", e);
         }
+    }
+
+    /**
+     * Loads the .asl file from the Java "resources" directory.
+     * @return The path to the .asl file.
+     */
+    private String loadBeliefBase() {
+        String fd = null;
+        try {
+            fd = getClass().getClassLoader().getResource(jasonFileName).getFile();
+            System.out.println(fd);
+        } catch (NullPointerException e) {
+            System.err.println("Failed to load resource file: " + jasonFileName);
+            System.exit(-1);
+        }
+        return fd;
     }
 
     public void run() {
@@ -65,9 +81,7 @@ public class AgentBridge extends AgArch {
     // this method just add some perception for the agent
     @Override
     public List<Literal> perceive() {
-        List<Literal> l = new ArrayList<>(brain.getPerceptions());
-
-        return l;
+        return new ArrayList<>(brain.getPerceptions());
     }
 
     // this method get the agent actions
@@ -76,14 +90,11 @@ public class AgentBridge extends AgArch {
         getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
 
         Structure actionTerm = action.getActionTerm();
-        Term dashToBall = Literal.parseLiteral("dash_towards_ball");
-        Term lookAround = Literal.parseLiteral("look_around");
+        String term = actionTerm.toString();
 
-        if (actionTerm.equals(dashToBall)){
-            brain.updateAction(Action.Actions.valueOf(dashToBall.toString().toUpperCase()), true);
-        } else if (actionTerm.equals(lookAround)){
-            brain.updateAction(Action.Actions.valueOf(lookAround.toString().toUpperCase()), true);
-        }
+
+        brain.updateAction(Action.Actions.valueOf(term), true);
+
 
         // set that the execution was ok
         action.setResult(true);

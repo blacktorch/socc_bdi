@@ -1,4 +1,4 @@
-package robocup;
+package main;
 
 public class PlayView {
     private Memory memory;
