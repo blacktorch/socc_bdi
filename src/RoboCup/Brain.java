@@ -32,6 +32,7 @@ public class Brain extends Thread implements SensorInput {
     private Perception perception;
     private long runNumber;
     private Action.Actions actionToPerform;
+    private Action.Actions previousAction;
     private boolean actionUpdated;
     private List<Literal> perceptions;
     private String playerName;
@@ -52,6 +53,7 @@ public class Brain extends Thread implements SensorInput {
         this.runNumber = 0;
         perceptions = new ArrayList<>();
         actionToPerform = Action.Actions.DO_NOTHING;
+        previousAction = actionToPerform;
         actionUpdated = false;
 
         switch (number){
@@ -95,9 +97,16 @@ public class Brain extends Thread implements SensorInput {
         while (!timeOver) {
             // sleep one step to ensure that we will not send
             // two commands in one cycle.
+
             environment.updatePerceptions();
             if (actionUpdated){
+                if (actionToPerform != previousAction){
+                    long newId = perception.getId();
+                    newId++;
+                    perception.setId(newId);
+                }
                 action.perform();
+                previousAction = actionToPerform;
             }
 
             try {

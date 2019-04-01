@@ -1,11 +1,29 @@
 +can_see_ball : not_with_ball
-   <- dash_towards_ball.
+        <- !getBall.
+
++!getBall :  not_with_ball
+          <- dash_towards_ball.
 
 +has_ball : can_see_goal
-    <- kick_towards_goal.
+          <- !kickBall.
 
 +ball_not_visible : true
-    <- look_around.
+    <- !findBall.
 
-+has_ball : not can_see_goal
-    <- look_around.
++!findBall : ball_not_visible
+        <- look_around;
+        !findBall.
+
++!findBall : can_see_ball &
+             not_with_ball
+             <- dash_towards_ball;
+             !kickBall.
+
++!kickBall : has_ball &
+             goal_not_visible
+             <- look_around;
+             !kickBall.
+
++!kickBall : has_ball &
+             can_see_goal
+             <- kick_towards_goal.

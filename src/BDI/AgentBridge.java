@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * Example of an agent that only uses Jason BDI engine. It runs without all
  * Jason IDE stuff. (see Jason FAQ for more information about this example)
- *
+ * <p>
  * The class must extend AgArch class to be used by the Jason engine.
  */
 public class AgentBridge extends AgArch {
@@ -50,7 +50,7 @@ public class AgentBridge extends AgArch {
         try {
             while (isRunning()) {
                 // calls the Jason engine to perform one reasoning cycle
-                logger.fine("Reasoning....");
+                //logger.fine("Reasoning....");
                 getTS().reasoningCycle();
                 if (getTS().canSleep()) {
                     sleep();
@@ -68,16 +68,15 @@ public class AgentBridge extends AgArch {
     // this method just add some perception for the agent
     @Override
     public List<Literal> perceive() {
+
         ArrayList<Literal> l = new ArrayList<>(brain.getPerceptions());
-        if (l.equals(previousPerceptions)){
-            if (isActionDone) {
-                isNewPerception = false;
-                System.out.println("Old Perception");
-            }
+        if (l.equals(previousPerceptions)) {
+            isNewPerception = false;
+            //System.out.println("Old Perception");
+            //brain.updateAction(Action.Actions.DO_NOTHING, false);
         } else {
             isNewPerception = true;
-            isActionDone = false;
-            System.out.println("New Perception");
+            //System.out.println("New Perception");
         }
         previousPerceptions = (List<Literal>) l.clone();
 
@@ -93,7 +92,6 @@ public class AgentBridge extends AgArch {
         System.out.println(actionTerm.toString());
 
         brain.updateAction(Action.Actions.valueOf(actionTerm.toString().toUpperCase()), true);
-        isActionDone = true;
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
@@ -113,7 +111,8 @@ public class AgentBridge extends AgArch {
     public void sleep() {
         try {
             Thread.sleep(100);
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
     }
 
     // Not used methods

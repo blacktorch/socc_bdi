@@ -65,7 +65,7 @@ public class Environment {
         }
 
         brain.getPerceptions().clear();
-        String perceptionID = String.valueOf(brain.getRunNumber());
+        String perceptionID = String.valueOf(perception.getId());
 
         for(PlayView.PlayerView condition : PlayView.PlayerView.values()){
             if (perception.getIsPerceived().get(condition)){
