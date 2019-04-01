@@ -1,4 +1,4 @@
-package RoboCup;
+package robocup;
 
 import jason.asSyntax.Literal;
 

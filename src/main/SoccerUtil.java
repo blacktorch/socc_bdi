@@ -1,4 +1,4 @@
-package RoboCup;
+package robocup;
 
 import java.io.*;
 import java.util.List;

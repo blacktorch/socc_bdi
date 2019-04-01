@@ -3,7 +3,7 @@
 //	Author:		Krzysztof Langner
 //	Date:			1997/04/28
 //
-package RoboCup;
+package robocup;
 class SoccerParams 
 {
 	final static int	simulator_step = 100;

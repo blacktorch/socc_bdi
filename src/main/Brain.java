@@ -9,9 +9,9 @@
 //    Date:             March 4, 2008
 //    Modified by:      Chidiebere Onyedinma
 //    Date:             March 2, 2019
-package RoboCup;
+package robocup;
 
-import BDI.AgentBridge;
+import bdi.AgentBridge;
 import jason.asSyntax.Literal;
 
 import java.util.ArrayList;

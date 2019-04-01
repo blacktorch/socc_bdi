@@ -1,4 +1,4 @@
-package RoboCup;
+package robocup;
 public final class Constants {
 
     private Constants(){
