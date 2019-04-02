@@ -288,25 +288,25 @@ public class Believer implements SendCommand {
         return new String(buffer);
     }
 
-    private Knowledge getPerception(){
-        List<PlayView.Environments> perceptions = new ArrayList<>();
-        for (PlayView.Environments e : PlayView.Environments.values()){
+    private Perception getPerception(){
+        List<PlayView.PlayerView> perceptions = new ArrayList<>();
+        for (PlayView.PlayerView e : PlayView.PlayerView.values()){
             perceptions.add(e);
         }
         try {
-            return new Knowledge(perceptions);
+            return new Perception(perceptions);
 
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("=================================================     ");
-            System.err.println("     Error Loading Knowledge File                      ");
+            System.err.println("     Error Loading Perception File                      ");
             System.err.println("     --------------------------------------------     ");
-            System.err.println("     Knowledge file not found                          ");
+            System.err.println("     Perception file not found                          ");
             /**-----------------------------------------------------------------------**/
             System.out.println("=================================================     ");
-            System.out.println("     Error Loading Knowledge File                      ");
+            System.out.println("     Error Loading Perception File                      ");
             System.out.println("     --------------------------------------------     ");
-            System.out.println("     Knowledge file not found                          ");
+            System.out.println("     Perception file not found                          ");
         }
 
         return null;

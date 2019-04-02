@@ -9,18 +9,7 @@ public class Action {
     private Memory memory;
     private char side;
     private Brain brain;
-    private List<PlayView.Environments> preConditions;
-    private Rule rule;
-
-    public Action(Brain brain, Rule rule) {
-        this.actor = brain.getBeliever();
-        this.memory = brain.getMemory();
-        this.side = brain.getSide();
-        this.team = brain.getTeam();
-        this.brain = brain;
-        this.preConditions = rule.getPreConditions();
-        this.rule = rule;
-    }
+    private List<PlayView.PlayerView> preConditions;
 
     public Action(Brain brain) {
         this.actor = brain.getBeliever();
@@ -39,11 +28,13 @@ public class Action {
     public void dashTowardsBall() {
         ObjectInfo ball = memory.getObject(Constants.BALL);
         PlayerInfo player = (PlayerInfo)memory.getObject(Constants.PLAYER);
-        if (ball.direction != 0) {
+        if (ball != null && ball.direction != 0) {
             actor.turn(ball.direction);
         } else {
             if (!(player != null && player.getTeamName().equals(team) && player.distance <= 6)){
-                actor.dash(10 * ball.distance);
+                if (ball != null) {
+                    actor.dash(10 * ball.distance);
+                }
             }
         }
     }
@@ -96,7 +87,7 @@ public class Action {
     }
 
     public void perform(){
-        switch (rule.getAction()){
+        switch (brain.getActionToPerform()){
             case PASS_BALL:
                 passBall();
                 break;
@@ -120,14 +111,6 @@ public class Action {
                 default:
                     lookAround();
         }
-    }
-
-    public Rule getRule(){
-        return rule;
-    }
-
-    public List<PlayView.Environments> getPreConditions(){
-        return preConditions;
     }
 
     public enum Actions {

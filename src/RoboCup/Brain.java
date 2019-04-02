@@ -11,7 +11,7 @@
 //    Date:             March 2, 2019
 package RoboCup;
 
-import BDI.SimpleJasonAgent;
+import BDI.AgentBridge;
 import jason.asSyntax.Literal;
 
 import java.util.ArrayList;
@@ -29,16 +29,19 @@ public class Brain extends Thread implements SensorInput {
     private String playMode;
     private int number;
     private String team;
-    private Knowledge perception;
+    private Perception perception;
     private long runNumber;
-    private List<Action.Actions> actions;
+    private Action.Actions actionToPerform;
+    private Action.Actions previousAction;
+    private boolean actionUpdated;
     private List<Literal> perceptions;
+    private String playerName;
 
     //---------------------------------------------------------------------------
     // This constructor:
     // - stores connection to believer
     // - starts thread for this object
-    public Brain(SendCommand believer, String team, char side, int number, String playMode, Knowledge perception) {
+    public Brain(SendCommand believer, String team, char side, int number, String playMode, Perception perception) {
         timeOver = false;
         this.believer = believer;
         memory = new Memory();
@@ -49,7 +52,29 @@ public class Brain extends Thread implements SensorInput {
         this.perception = perception;
         this.runNumber = 0;
         perceptions = new ArrayList<>();
-        actions = new ArrayList<>();
+        actionToPerform = Action.Actions.DO_NOTHING;
+        previousAction = actionToPerform;
+        actionUpdated = false;
+
+        switch (number){
+            case 1:
+                playerName = "Goalie";
+                break;
+            case 2:
+                playerName = "Griffin";
+                break;
+            case 3:
+                playerName = "Chidi";
+                break;
+            case 4:
+                playerName = "Chris";
+                break;
+            case 5:
+                playerName = "Babak";
+                break;
+                default:
+                    playerName = "Player";
+        }
         start();
     }
 
@@ -61,17 +86,28 @@ public class Brain extends Thread implements SensorInput {
             believer.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
         }
 
-        InferenceEngine inferenceEngine = new InferenceEngine(perception, this);
+        Environment environment = new Environment(perception, this);
+        Action action = new Action(this);
 
         new Thread(() -> {
-            SimpleJasonAgent agent = new SimpleJasonAgent(Brain.this);
+            AgentBridge agent = new AgentBridge(Brain.this);
             agent.run();
         }).start();
 
         while (!timeOver) {
             // sleep one step to ensure that we will not send
             // two commands in one cycle.
-            inferenceEngine.updatePerceptions();
+
+            environment.updatePerceptions();
+            if (actionUpdated){
+                if (actionToPerform != previousAction){
+                    long newId = perception.getId();
+                    newId++;
+                    perception.setId(newId);
+                }
+                action.perform();
+                previousAction = actionToPerform;
+            }
 
             try {
                 Thread.sleep(2 * SoccerParams.simulator_step);
@@ -111,6 +147,10 @@ public class Brain extends Thread implements SensorInput {
         return runNumber;
     }
 
+    public String getPlayerName(){
+        return playerName;
+    }
+
     public List<Literal> getPerceptions(){
         return perceptions;
     }
@@ -137,6 +177,15 @@ public class Brain extends Thread implements SensorInput {
         if (message.compareTo("time_over") == 0)
             timeOver = true;
 
+    }
+
+    public void updateAction(Action.Actions action, boolean isUpdated){
+        actionToPerform = action;
+        actionUpdated = isUpdated;
+    }
+
+    public Action.Actions getActionToPerform(){
+        return actionToPerform;
     }
 
 }

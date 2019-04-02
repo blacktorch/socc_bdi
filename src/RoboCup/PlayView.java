@@ -79,7 +79,7 @@ public class PlayView {
         }
     }
 
-    public enum Environments {
+    public enum PlayerView {
         BALL_NOT_VISIBLE,
         CAN_SEE_BALL,
         CAN_SEE_GOAL,

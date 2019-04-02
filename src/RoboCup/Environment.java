@@ -4,18 +4,18 @@ import jason.asSyntax.Literal;
 
 import java.util.Map;
 
-public class InferenceEngine {
-    private Knowledge perception;
+public class Environment {
+    private Perception perception;
     private Brain brain;
 
-    public InferenceEngine(Knowledge perception, Brain brain){
+    public Environment(Perception perception, Brain brain){
         this.perception = perception;
         this.brain = brain;
     }
 
     public void updatePerceptions(){
         PlayView playView = new PlayView(brain);
-        for (Map.Entry<PlayView.Environments, Boolean> entry : perception.getIsPerceived().entrySet()){
+        for (Map.Entry<PlayView.PlayerView, Boolean> entry : perception.getIsPerceived().entrySet()){
             switch (entry.getKey()){
                 case HAS_BALL:
                     perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.hasBall());
@@ -65,12 +65,15 @@ public class InferenceEngine {
         }
 
         brain.getPerceptions().clear();
+        String perceptionID = String.valueOf(perception.getId());
 
-        for(PlayView.Environments condition : PlayView.Environments.values()){
+        for(PlayView.PlayerView condition : PlayView.PlayerView.values()){
             if (perception.getIsPerceived().get(condition)){
                 brain.getPerceptions().add(Literal.parseLiteral(condition.name().toLowerCase()));
             }
         }
+
+        brain.getPerceptions().add(Literal.parseLiteral("id("+ perceptionID + ")"));
 
     }
 }
