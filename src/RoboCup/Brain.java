@@ -63,53 +63,14 @@ public class Brain extends Thread implements SensorInput {
 
 
     public void run() {
-        //get all the actions from the knowledge base
-        // first put it somewhere on my side
-        if (Pattern.matches("^before_kick_off.*", playMode)) {
-            switch (number){
-                case 1:
-                    playerName = "Goalie";
-                    isGoalie = true;
-                    believer.move(-48, 0);
-                    believer.changeView("wide", "high");
-                    break;
-                case 2:
-                    playerName = "Griffin";
-                    believer.move(-30, -10);
-                    break;
-                case 3:
-                    playerName = "Chidi";
-                    believer.move(-30, 10);
-                    break;
-                case 4:
-                    playerName = "Chris";
-                    believer.move(-20, -25);
-                    break;
-                case 5:
-                    playerName = "Babak";
-                    believer.move(-20, 25);
-                    break;
-                default:
-                    playerName = "Player";
-                    believer.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
-            }
-        }
+        setPlayerPositions();
 
         Environment environment = new Environment(perception, this);
         Action action = new Action(this);
 
-        try {
-            new Thread(() -> {
-                AgentBridge agent = new AgentBridge(Brain.this);
-                agent.run();
-            }).start();
-        } catch (Exception e){
-            System.out.println("Encountered problem running agent reasoning!");
-        }
+        startBDIEngine();
 
         while (!timeOver) {
-            // sleep one step to ensure that we will not send
-            // two commands in one cycle.
 
             environment.updatePerceptions();
             if (actionUpdated){
@@ -127,6 +88,8 @@ public class Brain extends Thread implements SensorInput {
 
             }
 
+            // sleep one step to ensure that we will not send
+            // two commands in one cycle.
             try {
                 Thread.sleep(2 * SoccerParams.simulator_step);
             } catch (Exception e) {
@@ -175,6 +138,50 @@ public class Brain extends Thread implements SensorInput {
 
     public List<Literal> getPerceptions(){
         return perceptions;
+    }
+
+    private void setPlayerPositions(){
+        // first put it somewhere on my side
+        if (Pattern.matches("^before_kick_off.*", playMode)) {
+            switch (number){
+                case 1:
+                    playerName = "Goalie";
+                    isGoalie = true;
+                    believer.move(-48, 0);
+                    believer.changeView("wide", "high");
+                    break;
+                case 2:
+                    playerName = "Griffin";
+                    believer.move(-30, -10);
+                    break;
+                case 3:
+                    playerName = "Chidi";
+                    believer.move(-30, 10);
+                    break;
+                case 4:
+                    playerName = "Chris";
+                    believer.move(-20, -25);
+                    break;
+                case 5:
+                    playerName = "Babak";
+                    believer.move(-20, 25);
+                    break;
+                default:
+                    playerName = "Player";
+                    believer.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
+            }
+        }
+    }
+
+    private void startBDIEngine(){
+        try {
+            new Thread(() -> {
+                AgentBridge agent = new AgentBridge(Brain.this);
+                agent.run();
+            }).start();
+        } catch (Exception e){
+            System.out.println("Encountered problem running agent reasoning!");
+        }
     }
 
 
