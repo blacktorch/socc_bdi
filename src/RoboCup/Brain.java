@@ -36,6 +36,7 @@ public class Brain extends Thread implements SensorInput {
     private boolean actionUpdated;
     private List<Literal> perceptions;
     private String playerName;
+    private boolean isGoalie;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -55,26 +56,8 @@ public class Brain extends Thread implements SensorInput {
         actionToPerform = Action.Actions.DO_NOTHING;
         previousAction = actionToPerform;
         actionUpdated = false;
-
-        switch (number){
-            case 1:
-                playerName = "Goalie";
-                break;
-            case 2:
-                playerName = "Griffin";
-                break;
-            case 3:
-                playerName = "Chidi";
-                break;
-            case 4:
-                playerName = "Chris";
-                break;
-            case 5:
-                playerName = "Babak";
-                break;
-                default:
-                    playerName = "Player";
-        }
+        playerName = "Agent";
+        isGoalie = false;
         start();
     }
 
@@ -83,16 +66,46 @@ public class Brain extends Thread implements SensorInput {
         //get all the actions from the knowledge base
         // first put it somewhere on my side
         if (Pattern.matches("^before_kick_off.*", playMode)) {
-            believer.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
+            switch (number){
+                case 1:
+                    playerName = "Goalie";
+                    isGoalie = true;
+                    believer.move(-48, 0);
+                    believer.changeView("wide", "high");
+                    break;
+                case 2:
+                    playerName = "Griffin";
+                    believer.move(-30, -10);
+                    break;
+                case 3:
+                    playerName = "Chidi";
+                    believer.move(-30, 10);
+                    break;
+                case 4:
+                    playerName = "Chris";
+                    believer.move(-20, -25);
+                    break;
+                case 5:
+                    playerName = "Babak";
+                    believer.move(-20, 25);
+                    break;
+                default:
+                    playerName = "Player";
+                    believer.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
+            }
         }
 
         Environment environment = new Environment(perception, this);
         Action action = new Action(this);
 
-        new Thread(() -> {
-            AgentBridge agent = new AgentBridge(Brain.this);
-            agent.run();
-        }).start();
+        try {
+            new Thread(() -> {
+                AgentBridge agent = new AgentBridge(Brain.this);
+                agent.run();
+            }).start();
+        } catch (Exception e){
+            System.out.println("Encountered problem running agent reasoning!");
+        }
 
         while (!timeOver) {
             // sleep one step to ensure that we will not send
@@ -105,8 +118,13 @@ public class Brain extends Thread implements SensorInput {
                     newId++;
                     perception.setId(newId);
                 }
-                action.perform();
-                previousAction = actionToPerform;
+                try {
+                    action.perform();
+                    previousAction = actionToPerform;
+                } catch (Exception e){
+                    System.out.println("Failed to perform action");
+                }
+
             }
 
             try {
@@ -149,6 +167,10 @@ public class Brain extends Thread implements SensorInput {
 
     public String getPlayerName(){
         return playerName;
+    }
+
+    public boolean isGoalie(){
+        return this.isGoalie;
     }
 
     public List<Literal> getPerceptions(){

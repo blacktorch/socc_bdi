@@ -32,6 +32,26 @@ public class SoccerUtil {
         }
     }
 
+    public static ObjectInfo getGoalTop(Memory memory, char side){
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + side + Constants.SPACE + Constants.TOP);
+    }
+
+    public static ObjectInfo getGoalBottom(Memory memory, char side){
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + side + Constants.SPACE + Constants.BOTTOM);
+    }
+
+    public static ObjectInfo getPostTop(Memory memory, char side){
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.TOP);
+    }
+
+    public static ObjectInfo getPostCentre(Memory memory, char side){
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.CENTRE);
+    }
+
+    public static ObjectInfo getPostBottom(Memory memory, char side){
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.BOTTOM);
+    }
+
     public static boolean areAllTrue(List<Boolean> array) {
 
         for (Boolean b : array) {

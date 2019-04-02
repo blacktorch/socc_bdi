@@ -61,6 +61,14 @@ public class Environment {
                     perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), !playView.canSeeTeamMate());
                     //System.out.println(entry.getKey().toString() + " : " + !playView.canSeeTeamMate());
                     break;
+                case IS_IN_GOAL_AREA:
+                    perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.isInGoalArea());
+                    break;
+                case BALL_IN_GOAL_AREA:
+                    perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.ballInGoalArea());
+                    break;
+                case IS_GOALIE:
+                    perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.isGoalie());
             }
         }
 

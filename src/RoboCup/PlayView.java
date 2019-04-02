@@ -4,11 +4,13 @@ public class PlayView {
     private Memory memory;
     private String team;
     private char side;
+    private boolean isGoalie;
 
     public PlayView(Brain brain){
         this.memory = brain.getMemory();
         this.team = brain.getTeam();
         this.side = brain.getSide();
+        this.isGoalie = brain.isGoalie();
     }
 
     public boolean canSeeBall(){
@@ -79,6 +81,51 @@ public class PlayView {
         }
     }
 
+    public boolean ballInGoalArea(){
+        ObjectInfo postTop = SoccerUtil.getPostTop(memory,side);
+        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory,side);
+        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory,side);
+        ObjectInfo ball = memory.getObject(Constants.BALL);
+
+        try {
+            if ((ball != null && postTop != null && ball.distance <= postTop.distance || ball != null && postCentre != null && ball.distance <= postCentre.distance || ball != null && postBottom != null && ball.distance <= postBottom.distance) ||
+                    (ball != null && postTop != null && (ball.distance - postTop.distance) <=3) || (ball != null && postCentre != null && (ball.distance - postCentre.distance) <= 3) || (ball != null && postBottom != null && (ball.distance - postBottom.distance) <= 3) ||
+                    ball.distance <= 8){
+                return true;
+            }
+        } catch (NullPointerException e){
+            return false;
+        }
+
+        return false;
+    }
+
+    public boolean isInGoalArea(){
+        ObjectInfo postTop = SoccerUtil.getPostTop(memory,side);
+        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory,side);
+        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory,side);
+
+        ObjectInfo goalTop = SoccerUtil.getGoalTop(memory,side);
+        ObjectInfo goal = SoccerUtil.getMyGoal(memory,side);
+        ObjectInfo goalBottom = SoccerUtil.getGoalBottom(memory,side);
+
+        try {
+            if ((postTop != null && postCentre != null && postBottom != null && goalTop != null && goal != null && goalBottom != null) ||
+                    (postTop == null && postCentre == null && postBottom == null && goalTop == null && goal == null && goalBottom == null)){
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e){
+            return false;
+        }
+
+    }
+
+    public boolean isGoalie(){
+        return this.isGoalie;
+    }
+
     public enum PlayerView {
         BALL_NOT_VISIBLE,
         CAN_SEE_BALL,
@@ -90,6 +137,9 @@ public class PlayView {
         TEAM_MATE_NOT_VISIBLE,
         FACING_MY_GOAL,
         NOT_WITH_BALL,
-        GOAL_NOT_VISIBLE
+        GOAL_NOT_VISIBLE,
+        BALL_IN_GOAL_AREA,
+        IS_IN_GOAL_AREA,
+        IS_GOALIE,
     }
 }

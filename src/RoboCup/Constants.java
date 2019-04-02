@@ -17,4 +17,8 @@ public final class Constants {
     public static final char RIGHT = 'r';
     public static final char TOP = 't';
     public static final char BOTTOM = 'b';
+    public static final char POST = 'p';
+    public static final char CENTRE = 'c';
+    public static final char GOAL = 'g';
+    public static final String SPACE = " ";
 }

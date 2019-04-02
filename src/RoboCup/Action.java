@@ -46,7 +46,7 @@ public class Action {
     public void passBall() {
         PlayerInfo player = (PlayerInfo) memory.getObject(Constants.PLAYER);
 
-        if (player != null){
+        if (player != null && player.getTeamName().equals(team)){
             if (player.direction != 0) {
                 actor.turn(player.direction);
             } else {
@@ -86,6 +86,19 @@ public class Action {
         }
     }
 
+    public void goalieKickAway(){
+        ObjectInfo centerField = memory.getObject(Constants.FLAG + Constants.SPACE + Constants.CENTRE);
+        ObjectInfo centerFieldTop = memory.getObject(Constants.FLAG + Constants.SPACE + Constants.CENTRE + Constants.SPACE + Constants.TOP);
+        ObjectInfo centerFieldBottom = memory.getObject(Constants.FLAG + Constants.SPACE + Constants.CENTRE + Constants.SPACE + Constants.BOTTOM);
+        if (centerField != null){
+            actor.kick(100, centerField.direction);
+        } else if (centerFieldTop != null){
+            actor.kick(100, centerFieldTop.direction);
+        } else if (centerFieldBottom != null){
+            actor.kick(100, centerFieldBottom.direction);
+        }
+    }
+
     public void perform(){
         switch (brain.getActionToPerform()){
             case PASS_BALL:
@@ -106,6 +119,9 @@ public class Action {
             case DASH_FORWARD:
                 dashForward();
                 break;
+            case GOALIE_KICK_AWAY:
+                goalieKickAway();
+                break;
             case DO_NOTHING:
                 break;
                 default:
@@ -120,6 +136,7 @@ public class Action {
         LOOK_AROUND,
         PASS_BALL,
         DASH_FORWARD,
+        GOALIE_KICK_AWAY,
         DO_NOTHING,
     }
 
