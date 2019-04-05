@@ -1,4 +1,15 @@
+/**
+ * File:   PlayView.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
+
+/**
+ * The PlayView class has various methods
+ * that tell the different perceptions as viewed
+ * by the agent
+ * **/
 
 public class PlayView {
     private Memory memory;

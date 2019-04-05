@@ -1,3 +1,8 @@
+/**
+ * File:   Believer.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
 
 import java.io.IOException;
@@ -250,12 +255,12 @@ public class Believer implements SendCommand {
         time = Integer.parseInt(m.group(1));
         sender = m.group(2);
         uttered = m.group(3);
-        if (sender.compareTo("referee") == 0)
+        if (sender.compareTo("referee") == 0) {
             brain.hear(time, uttered);
-            //else if( coach_pattern.matcher(sender).find())
-            //    brain.hear(time,sender,uttered);
-        else if (sender.compareTo("self") != 0)
+        }
+        else if (sender.compareTo("self") != 0) {
             brain.hear(time, Integer.parseInt(sender), uttered);
+        }
     }
 
 
@@ -298,15 +303,6 @@ public class Believer implements SendCommand {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("=================================================     ");
-            System.err.println("     Error Loading Perception File                      ");
-            System.err.println("     --------------------------------------------     ");
-            System.err.println("     Perception file not found                          ");
-            /**-----------------------------------------------------------------------**/
-            System.out.println("=================================================     ");
-            System.out.println("     Error Loading Perception File                      ");
-            System.out.println("     --------------------------------------------     ");
-            System.out.println("     Perception file not found                          ");
         }
 
         return null;

@@ -1,3 +1,8 @@
+/**
+ * File:   SoccerUtil.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
 
 import java.io.*;

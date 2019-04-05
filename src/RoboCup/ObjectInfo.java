@@ -9,7 +9,10 @@
 
 //  Modified by:  Edgar Acosta
 //  Date:         March 4, 2008
-
+/**
+ * Modified by: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 //***************************************************************************
 //
 //	This is base class for different classese with visual information

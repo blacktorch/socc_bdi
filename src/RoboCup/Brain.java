@@ -7,8 +7,9 @@
 
 //    Modified by:      Edgar Acosta
 //    Date:             March 4, 2008
+
 //    Modified by:      Chidiebere Onyedinma
-//    Date:             March 2, 2019
+//    Date:             April 5, 2019
 package RoboCup;
 
 import BDI.AgentBridge;
@@ -38,6 +39,7 @@ public class Brain extends Thread implements SensorInput {
     private String playerName;
     private boolean isGoalie;
     private long actionTimeStamp;
+    private String refereeMessage;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -60,6 +62,7 @@ public class Brain extends Thread implements SensorInput {
         playerName = "Agent";
         isGoalie = false;
         actionTimeStamp = System.currentTimeMillis();
+        refereeMessage = "";
         start();
 
     }
@@ -149,6 +152,7 @@ public class Brain extends Thread implements SensorInput {
     }
 
     public void setPlayerPositions(){
+
         // set player formation.
         if (Pattern.matches("^before_kick_off.*", playMode)) {
             switch (number){
@@ -192,6 +196,10 @@ public class Brain extends Thread implements SensorInput {
         }
     }
 
+    public String getRefereeMessage(){
+        return refereeMessage;
+    }
+
 
     //===========================================================================
     // Implementation of SensorInput Interface
@@ -211,6 +219,8 @@ public class Brain extends Thread implements SensorInput {
     //---------------------------------------------------------------------------
     // This function receives hear information from referee
     public void hear(int time, String message) {
+        refereeMessage = message;
+        System.out.println(message);
         if (message.compareTo("time_over") == 0) {
             timeOver = true;
         }

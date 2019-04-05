@@ -1,28 +1,8 @@
-//****Beliefs, Intentions and Goals****//
-
 +not_with_ball : not is_goalie & can_see_ball
                 <- !getBall.
 
 +can_see_ball : not_with_ball
                 <- !getBall.
-
-+ball_not_visible : true
-                    <- !findBall.
-
-+has_ball : true
-            <- !makePlayDecision.
-
-+is_goalie : true
-           <- !protectGoal.
-
-+ball_in_goal_area : is_goalie
-                     <- !protectGoal.
-
-+is_in_goal_area : is_goalie
-                   <- !protectGoal.
-
-
-//****Plans for the agent****//
 
 +!getBall : can_see_ball & team_mate_has_ball
             <- dash_forward.
@@ -48,6 +28,11 @@
 +!findBall : is_goalie & ball_in_goal_area
              <- !protectGoal.
 
++ball_not_visible : true
+                    <- !findBall.
++has_ball : true
+            <- !makePlayDecision.
+
 +!makePlayDecision : has_ball & goal_not_visible & can_see_team_mate
                      <- pass_ball;
                      -has_ball.
@@ -72,6 +57,9 @@
 +!makePlayDecision : has_ball & goal_not_visible & not can_see_team_mate
                      <- look_around.
 
++is_goalie : true
+           <- !protectGoal.
+
 +!protectGoal : ball_in_goal_area & has_ball
                 <- goalie_kick_away;
                 !protectGoal;
@@ -88,3 +76,9 @@
 
 +!protectGoal : not ball_in_goal_area
                 <- look_around.
+
++ball_in_goal_area : is_goalie
+                     <- !protectGoal.
+
++is_in_goal_area : is_goalie
+                   <- !protectGoal.

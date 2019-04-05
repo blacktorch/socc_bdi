@@ -1,6 +1,18 @@
+
+/**
+ * File:   Action.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
 
 import java.util.List;
+
+/**
+ * The Action class has various methods
+ * that the RoboCup agents uses to perform various actions.
+ * The names of the methods vividly describes the actions
+ * **/
 
 public class Action {
 
@@ -28,7 +40,7 @@ public class Action {
     public void dashTowardsBall() {
         ObjectInfo ball = memory.getObject(Constants.BALL);
 
-        dashToObject(ball, 30);
+        dashToObject(ball, 20);
     }
 
     public void kickTowardsGoal() {
@@ -42,7 +54,7 @@ public class Action {
             if (player.direction != 0) {
                 actor.turn(player.direction);
             } else {
-                actor.kick(5 * player.distance, player.direction);
+                actor.kick(3 * player.distance, player.direction);
             }
         } else {
             lookAround();
@@ -65,31 +77,52 @@ public class Action {
         }
     }
 
+    private void dashToObject(ObjectInfo objectInfo){
+        dashToObject(objectInfo,30);
+    }
+
     private void dashToObject(ObjectInfo objectInfo, int power) {
-        if (objectInfo == null) {
-            lookAround();
-        } else {
-            if (objectInfo.direction != 0) {
-                actor.turn(objectInfo.direction);
+        dashToObject(objectInfo, power, objectInfo.direction);
+    }
+
+    private void dashToObject(ObjectInfo objectInfo, int power, float direction){
+        try {
+            if (objectInfo == null){
+                lookAround();
             } else {
-                actor.dash(power * objectInfo.distance);
+                if (direction != 0){
+                    actor.turn(direction);
+                } else {
+                    actor.dash(power * objectInfo.distance);
+                }
             }
+        } catch (NullPointerException e){
+            System.out.println("Can't perceive object");
         }
+
     }
 
     public void dashForward() {
+        ObjectInfo c = memory.getObject("flag c");
+        ObjectInfo p = SoccerUtil.getPostCentre(memory, side, true);
+        ObjectInfo g = SoccerUtil.getOpponentsGoal(memory, side);
         switch (brain.getNumber()) {
             case 2:
-            case 3:
-                ObjectInfo c = memory.getObject("flag c");
-                ObjectInfo p = SoccerUtil.getPostCentre(memory, side, true);
-                ObjectInfo g = SoccerUtil.getOpponentsGoal(memory, side);
                 if (g != null) {
-                    dashToObject(g, 30);
+                    dashToObject(g, 30, g.direction-6);
                 } else if (p != null) {
-                    dashToObject(p, 30);
+                    dashToObject(p, 30, p.direction-6);
                 } else {
-                    dashToObject(c, 30);
+                    dashToObject(c);
+                }
+                break;
+            case 3:
+                if (g != null) {
+                    dashToObject(g, 30, g.direction+6);
+                } else if (p != null) {
+                    dashToObject(p, 30, p.direction+6);
+                } else {
+                    dashToObject(c);
                 }
                 break;
             case 4:
@@ -97,11 +130,11 @@ public class Action {
                 ObjectInfo pt = SoccerUtil.getPostTop(memory, side, true);
                 ObjectInfo ct = memory.getObject("flag c t");
                 if (gt != null) {
-                    dashToObject(gt, 30);
+                    dashToObject(gt);
                 } else if (pt != null) {
-                    dashToObject(pt, 30);
+                    dashToObject(pt);
                 } else {
-                    dashToObject(ct, 30);
+                    dashToObject(ct);
                 }
                 break;
             case 5:
@@ -109,11 +142,11 @@ public class Action {
                 ObjectInfo pb = SoccerUtil.getPostBottom(memory, side, true);
                 ObjectInfo cb = memory.getObject("flag c b");
                 if (gb != null) {
-                    dashToObject(gb, 30);
+                    dashToObject(gb);
                 } else if (pb != null) {
-                    dashToObject(pb, 30);
+                    dashToObject(pb);
                 } else {
-                    dashToObject(cb, 30);
+                    dashToObject(cb);
                 }
                 break;
         }
@@ -140,41 +173,49 @@ public class Action {
     }
 
     public void perform(Actions actionToPerform) {
-        switch (actionToPerform) {
-            case PASS_BALL:
-                passBall();
-                break;
-            case LOOK_AROUND:
-                lookAround();
-                break;
-            case DASH_TOWARDS_BALL:
-                dashTowardsBall();
-                break;
-            case DASH_TOWARDS_GOAL:
-                dashTowardsGoal();
-                break;
-            case KICK_TOWARDS_GOAL:
-                kickTowardsGoal();
-                break;
-            case DASH_FORWARD:
-                dashForward();
-                break;
-            case GOALIE_KICK_AWAY:
-                goalieKickAway();
-                break;
-            case RETURN_TO_GOAL_AREA:
-                returnToGoalArea();
-                break;
-            case DO_NOTHING:
-                break;
-            default:
-                lookAround();
+        if (brain.getRefereeMessage().equals("play_on") || brain.getRefereeMessage().equals("drop_ball")) {
+            switch (actionToPerform) {
+                case PASS_BALL:
+                    passBall();
+                    break;
+                case LOOK_AROUND:
+                    lookAround();
+                    break;
+                case DASH_TOWARDS_BALL:
+                    dashTowardsBall();
+                    break;
+                case DASH_TOWARDS_GOAL:
+                    dashTowardsGoal();
+                    break;
+                case KICK_TOWARDS_GOAL:
+                    kickTowardsGoal();
+                    break;
+                case DASH_FORWARD:
+                    dashForward();
+                    break;
+                case GOALIE_KICK_AWAY:
+                    goalieKickAway();
+                    break;
+                case RETURN_TO_GOAL_AREA:
+                    returnToGoalArea();
+                    break;
+                case DO_NOTHING:
+                    break;
+                default:
+                    lookAround();
+            }
         }
     }
 
     public void perform() {
         perform(brain.getActionToPerform());
     }
+
+    /**
+     * The Actions enum is an enumeration of all possible actions
+     * that the Action class offers.
+     *
+     * **/
 
     public enum Actions {
         DASH_TOWARDS_BALL,
