@@ -37,6 +37,7 @@ public class Brain extends Thread implements SensorInput {
     private List<Literal> perceptions;
     private String playerName;
     private boolean isGoalie;
+    private long actionTimeStamp;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -58,7 +59,9 @@ public class Brain extends Thread implements SensorInput {
         actionUpdated = false;
         playerName = "Agent";
         isGoalie = false;
+        actionTimeStamp = System.currentTimeMillis();
         start();
+
     }
 
 
@@ -74,20 +77,25 @@ public class Brain extends Thread implements SensorInput {
 
             environment.updatePerceptions();
             if (actionUpdated){
+
                 if (actionToPerform != previousAction){
                     long newId = perception.getId();
                     newId++;
                     perception.setId(newId);
                 }
                 try {
-                    action.perform();
+                    synchronized (action){
+                        action.perform();
+                    }
+
                     previousAction = actionToPerform;
+
                 } catch (Exception e){
                     System.out.println("Failed to perform action");
                 }
 
             }
-
+            setPlayerPositions();
             // sleep one step to ensure that we will not send
             // two commands in one cycle.
             try {
@@ -136,12 +144,12 @@ public class Brain extends Thread implements SensorInput {
         return this.isGoalie;
     }
 
-    public List<Literal> getPerceptions(){
+    public synchronized List<Literal> getPerceptions(){
         return perceptions;
     }
 
-    private void setPlayerPositions(){
-        // first put it somewhere on my side
+    public void setPlayerPositions(){
+        // set player formation.
         if (Pattern.matches("^before_kick_off.*", playMode)) {
             switch (number){
                 case 1:
@@ -152,19 +160,19 @@ public class Brain extends Thread implements SensorInput {
                     break;
                 case 2:
                     playerName = "Griffin";
-                    believer.move(-30, -10);
+                    believer.move(-7, -7);
                     break;
                 case 3:
                     playerName = "Chidi";
-                    believer.move(-30, 10);
+                    believer.move(-7, 7);
                     break;
                 case 4:
                     playerName = "Chris";
-                    believer.move(-20, -25);
+                    believer.move(-30, -25);
                     break;
                 case 5:
                     playerName = "Babak";
-                    believer.move(-20, 25);
+                    believer.move(-30, 25);
                     break;
                 default:
                     playerName = "Player";
@@ -203,14 +211,16 @@ public class Brain extends Thread implements SensorInput {
     //---------------------------------------------------------------------------
     // This function receives hear information from referee
     public void hear(int time, String message) {
-        if (message.compareTo("time_over") == 0)
+        if (message.compareTo("time_over") == 0) {
             timeOver = true;
+        }
 
     }
 
-    public void updateAction(Action.Actions action, boolean isUpdated){
+    public void updateAction(Action.Actions action, boolean isUpdated, long timeStamp){
         actionToPerform = action;
         actionUpdated = isUpdated;
+        actionTimeStamp = timeStamp;
     }
 
     public Action.Actions getActionToPerform(){

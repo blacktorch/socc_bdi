@@ -6,6 +6,6 @@
 package RoboCup;
 class SoccerParams 
 {
-	final static int	simulator_step = 80;
+	final static int	simulator_step = 70;
 }
 

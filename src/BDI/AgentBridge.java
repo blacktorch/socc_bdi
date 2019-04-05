@@ -67,8 +67,8 @@ public class AgentBridge extends AgArch {
 
     // this method just add some perception for the agent
     @Override
-    public List<Literal> perceive() {
-
+    public synchronized List<Literal> perceive() {
+        brain.setPlayerPositions();
         ArrayList<Literal> l = new ArrayList<>(brain.getPerceptions());
         if (l.equals(previousPerceptions)) {
             isNewPerception = false;
@@ -85,13 +85,13 @@ public class AgentBridge extends AgArch {
 
     // this method get the agent actions
     @Override
-    public void act(ActionExec action) {
+    public synchronized void act(ActionExec action) {
         getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
 
         Structure actionTerm = action.getActionTerm();
         System.out.println(actionTerm.toString());
 
-        brain.updateAction(Action.Actions.valueOf(actionTerm.toString().toUpperCase()), true);
+        brain.updateAction(Action.Actions.valueOf(actionTerm.toString().toUpperCase()), true, System.currentTimeMillis());
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
