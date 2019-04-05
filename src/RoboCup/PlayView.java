@@ -5,12 +5,16 @@ public class PlayView {
     private String team;
     private char side;
     private boolean isGoalie;
+    private SendCommand player;
+    private int number;
 
     public PlayView(Brain brain){
         this.memory = brain.getMemory();
         this.team = brain.getTeam();
         this.side = brain.getSide();
         this.isGoalie = brain.isGoalie();
+        player = brain.getBeliever();
+        number = brain.getNumber();
     }
 
     public boolean canSeeBall(){
@@ -52,16 +56,17 @@ public class PlayView {
         }
     }
 
-    public boolean teamMateHasBall(){
+    public boolean teamMateHasBall() {
         PlayerInfo player = (PlayerInfo) memory.getObject(Constants.PLAYER);
         ObjectInfo ball = memory.getObject(Constants.BALL);
         if (player != null && ball != null && player.getTeamName().equals(team)) {
-            if ((player.distance - ball.distance) >= -4 && (player.distance - ball.distance) <= 4){
+            if (ball.distance > player.distance) {
                 return true;
             }
         }
         return false;
     }
+
 
     public boolean farFromGoal(){
         ObjectInfo goal = SoccerUtil.getOpponentsGoal(memory, side);
@@ -82,9 +87,9 @@ public class PlayView {
     }
 
     public boolean ballInGoalArea(){
-        ObjectInfo postTop = SoccerUtil.getPostTop(memory,side);
-        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory,side);
-        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory,side);
+        ObjectInfo postTop = SoccerUtil.getPostTop(memory,side, false);
+        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory,side, false);
+        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory,side, false);
         ObjectInfo ball = memory.getObject(Constants.BALL);
 
         try {
@@ -100,26 +105,37 @@ public class PlayView {
         return false;
     }
 
-    public boolean isInGoalArea(){
-        ObjectInfo postTop = SoccerUtil.getPostTop(memory,side);
-        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory,side);
-        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory,side);
+    public boolean isInGoalArea() {
+        ObjectInfo postTop = SoccerUtil.getPostTop(memory, side, false);
+        ObjectInfo postCentre = SoccerUtil.getPostCentre(memory, side, false);
+        ObjectInfo postBottom = SoccerUtil.getPostBottom(memory, side,false);
 
-        ObjectInfo goalTop = SoccerUtil.getGoalTop(memory,side);
-        ObjectInfo goal = SoccerUtil.getMyGoal(memory,side);
-        ObjectInfo goalBottom = SoccerUtil.getGoalBottom(memory,side);
+        ObjectInfo goalTop = SoccerUtil.getGoalTop(memory, side,false);
+        ObjectInfo goal = SoccerUtil.getMyGoal(memory, side);
+        ObjectInfo goalBottom = SoccerUtil.getGoalBottom(memory, side, false);
 
         try {
-            if ((postTop != null && postCentre != null && postBottom != null && goalTop != null && goal != null && goalBottom != null) ||
-                    (postTop == null && postCentre == null && postBottom == null && goalTop == null && goal == null && goalBottom == null)){
+            if ((postTop == null && postCentre == null && postBottom == null && goalTop == null && goal == null && goalBottom == null) ||
+                    (goal != null && goal.distance > 10) || (goalTop != null && goalTop.distance > 10) || (goalBottom != null && goalBottom.distance > 10) ||
+                    (postTop != null && postCentre == null && postBottom == null && goalTop == null ) || (postBottom != null && postCentre == null && postTop == null && goalBottom == null)) {
                 return false;
             } else {
                 return true;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
 
+    }
+
+    public boolean teamMateIsCloserToGoal(){
+        PlayerInfo player = SoccerUtil.getTeamMember(memory, team);
+        ObjectInfo goal = SoccerUtil.getOpponentsGoal(memory, side);
+        if (player != null && goal != null && goal.distance > player.distance){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public boolean isGoalie(){
@@ -140,6 +156,7 @@ public class PlayView {
         GOAL_NOT_VISIBLE,
         BALL_IN_GOAL_AREA,
         IS_IN_GOAL_AREA,
+        TEAM_MATE_IS_CLOSER_TO_GOAL,
         IS_GOALIE,
     }
 }

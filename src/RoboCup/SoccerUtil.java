@@ -32,24 +32,53 @@ public class SoccerUtil {
         }
     }
 
-    public static ObjectInfo getGoalTop(Memory memory, char side){
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + side + Constants.SPACE + Constants.TOP);
+    public static ObjectInfo getGoalTop(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
     }
 
-    public static ObjectInfo getGoalBottom(Memory memory, char side){
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + side + Constants.SPACE + Constants.BOTTOM);
+    public static ObjectInfo getGoalBottom(Memory memory, char side , boolean isOpponent) {
+        char s = side;
+        if (isOpponent){
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
     }
 
-    public static ObjectInfo getPostTop(Memory memory, char side){
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.TOP);
+    public static ObjectInfo getPostTop(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent){
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
     }
 
-    public static ObjectInfo getPostCentre(Memory memory, char side){
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.CENTRE);
+    public static ObjectInfo getPostCentre(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent){
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.CENTRE);
     }
 
-    public static ObjectInfo getPostBottom(Memory memory, char side){
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + side + Constants.SPACE + Constants.BOTTOM);
+    public static ObjectInfo getPostBottom(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent){
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
+    }
+
+    public static PlayerInfo getTeamMember(Memory memory, String team){
+        PlayerInfo player = (PlayerInfo) memory.getObject(Constants.PLAYER);
+        if (player != null && player.getTeamName().equals(team)) {
+            return player;
+        } else {
+            return null;
+        }
     }
 
     public static boolean areAllTrue(List<Boolean> array) {
@@ -102,5 +131,15 @@ public class SoccerUtil {
         }
 
         return count;
+    }
+
+    private static char setOpponentSide(char side) {
+
+        if (side == Constants.LEFT) {
+            side = Constants.RIGHT;
+        } else {
+            side = Constants.LEFT;
+        }
+        return side;
     }
 }

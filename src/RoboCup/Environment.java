@@ -67,6 +67,9 @@ public class Environment {
                 case BALL_IN_GOAL_AREA:
                     perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.ballInGoalArea());
                     break;
+                case TEAM_MATE_IS_CLOSER_TO_GOAL:
+                    perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.teamMateIsCloserToGoal());
+                    break;
                 case IS_GOALIE:
                     perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.isGoalie());
             }
