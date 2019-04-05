@@ -1,8 +1,18 @@
+/**
+ * File:   Environment.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
 
 import jason.asSyntax.Literal;
 
 import java.util.Map;
+
+/**
+ * The Environment class gets the latest perceptions
+ * from the RoboCup server. It uses the PlayView class to obtain
+ * perceptions from the players view**/
 
 public class Environment {
     private Perception perception;

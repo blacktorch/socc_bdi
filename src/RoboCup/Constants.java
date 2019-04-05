@@ -1,3 +1,8 @@
+/**
+ * File:   Constants.java
+ * Author: Onyedinma Chidiebere
+ * Date:   05/04/19
+ * **/
 package RoboCup;
 public final class Constants {
 
