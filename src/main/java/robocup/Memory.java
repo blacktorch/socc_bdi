@@ -6,20 +6,19 @@
 /**
  * Updated by: Onyedinma Chidiebere
  * Date:   05/04/19
- * **/
+ **/
 package robocup;
+
 class Memory {
+    final static int SIMULATOR_STEP = 100;
+    //===========================================================================
+    // Private members
+    volatile private VisualInfo m_info;    // place where all information is stored
+
     //---------------------------------------------------------------------------
     // This constructor:
     // - initializes all variables
     public Memory() {
-    }
-
-
-    //---------------------------------------------------------------------------
-    // This function puts see information into our memory
-    public void store(VisualInfo info) {
-        m_info = info;
     }
 
     //---------------------------------------------------------------------------
@@ -29,14 +28,13 @@ class Memory {
             waitForNewInfo();
 
         for (int c = 0; c < m_info.m_objects.size(); c++) {
-            ObjectInfo object = (ObjectInfo) m_info.m_objects.elementAt(c);
+            ObjectInfo object = m_info.m_objects.elementAt(c);
             if (object.type.compareTo(name) == 0)
                 return object;
         }
 
         return null;
     }
-
 
     //---------------------------------------------------------------------------
     // This function waits for new visual information
@@ -53,10 +51,10 @@ class Memory {
         }
     }
 
-
-    //===========================================================================
-    // Private members
-    volatile private VisualInfo m_info;    // place where all information is stored
-    final static int SIMULATOR_STEP = 100;
+    //---------------------------------------------------------------------------
+    // This function puts see information into our memory
+    public void store(VisualInfo info) {
+        m_info = info;
+    }
 }
 

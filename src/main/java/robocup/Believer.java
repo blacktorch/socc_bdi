@@ -2,7 +2,7 @@
  * File:   Believer.java
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
- * **/
+ **/
 package robocup;
 
 import java.io.IOException;
@@ -23,21 +23,21 @@ import java.util.regex.Pattern;
 //***************************************************************************
 public class Believer implements SendCommand {
 
-    /************************************************************
-    * Private members
-    * class members
-    * **********************************************************/
-    private DatagramSocket socket;        // Socket to communicate with server
-    private InetAddress host;             // Server address
-    private int port;                     // Server port
-    private String team;                  // team name
-    private SensorInput brain;            // input for sensor information
-    private boolean playing;              // controls the MainLoop
-    private Pattern messagePattern = Pattern.compile("^\\((\\w+?)\\s.*");
-    private Pattern hearPattern = Pattern.compile("^\\(hear\\s(\\w+?)\\s(\\w+?)\\s(.*)\\).*");
     //private Pattern coach_pattern = Pattern.compile("coach");
     // constants
     private static final int MSG_SIZE = 4096;    // Size of socket buffer
+    private SensorInput brain;            // input for sensor information
+    private Pattern hearPattern = Pattern.compile("^\\(hear\\s(\\w+?)\\s(\\w+?)\\s(.*)\\).*");
+    private InetAddress host;             // Server address
+    private Pattern messagePattern = Pattern.compile("^\\((\\w+?)\\s.*");
+    private boolean playing;              // controls the MainLoop
+    private int port;                     // Server port
+    /************************************************************
+     * Private members
+     * class members
+     * **********************************************************/
+    private DatagramSocket socket;        // Socket to communicate with server
+    private String team;                  // team name
 
     /***********************************************************
      The main appllication function.
@@ -46,24 +46,30 @@ public class Believer implements SendCommand {
      Reactor [-parameter value]
 
      Parameters:
-
      *  host (default "localhost")
      The host name can either be a machine name, such as "java.sun.com"
      or a string representing its IP address, such as "206.26.48.100."
-
      *	port (default 6000)
      Port number for communication with server
-
      *	team (default Reactors)
      Team name. This name can not contain spaces.
      ***********************************************************/
 
+    //---------------------------------------------------------------------------
+    // This constructor opens socket for  connection with server
+    public Believer(InetAddress host, int port, String team) throws SocketException {
+        socket = new DatagramSocket();
+        this.host = host;
+        this.port = port;
+        this.team = team;
+        playing = true;
+    }
+
     /****************************************************************************
-    * Initialization member functions
+     * Initialization member functions
+     *****************************************************************************/
 
-    *****************************************************************************/
-
-    public static void main(String a[]) throws SocketException, IOException {
+    public static void main(String[] a) throws IOException {
         String hostName = "";
         int port = 6000;
         String team = "Believer";
@@ -105,26 +111,6 @@ public class Believer implements SendCommand {
     }
 
     //---------------------------------------------------------------------------
-    // This constructor opens socket for  connection with server
-    public Believer(InetAddress host, int port, String team) throws SocketException {
-        socket = new DatagramSocket();
-        this.host = host;
-        this.port = port;
-        this.team = team;
-        playing = true;
-    }
-
-    //---------------------------------------------------------------------------
-    // This destructor closes socket to server
-    public void finalize() {
-        socket.close();
-    }
-
-
-    //===========================================================================
-    // Protected member functions
-
-    //---------------------------------------------------------------------------
     // This is main loop for player
     protected void mainLoop() throws IOException {
         byte[] buffer = new byte[MSG_SIZE];
@@ -147,7 +133,123 @@ public class Believer implements SendCommand {
 
 
     //===========================================================================
+    // Protected member functions
+
+    //===========================================================================
+    // Here comes collection of communication function
+    //---------------------------------------------------------------------------
+    // This function sends initialization command to the server
+    private void init() {
+        send("(init " + team + " (version 9))");
+    }
+
+
+    //===========================================================================
     // Implementation of SendCommand Interface
+
+    //---------------------------------------------------------------------------
+    // This function parses initial message from the server
+    protected void parseInitCommand(String message) throws IOException {
+        Matcher m = Pattern.compile("^\\(init\\s(\\w)\\s(\\d{1,2})\\s(\\w+?)\\).*$").matcher(message);
+        if (!m.matches()) {
+            throw new IOException(message);
+        }
+
+        // initialize player's brain
+        brain = new Brain(this,
+                team,
+                m.group(1).charAt(0),
+                Integer.parseInt(m.group(2)),
+                m.group(3),
+                getPerception());
+    }
+
+    //---------------------------------------------------------------------------
+    // This function parses sensor information
+    private void parseSensorInformation(String message) throws IOException {
+        // First check kind of information
+        Matcher m = messagePattern.matcher(message);
+        if (!m.matches()) {
+            throw new IOException(message);
+        }
+        if (m.group(1).compareTo("see") == 0) {
+            VisualInfo info = new VisualInfo(message);
+            info.parse();
+            brain.see(info);
+        } else if (m.group(1).compareTo("hear") == 0) {
+            parseHear(message);
+        }
+    }
+
+    // This function waits for new message from server
+    private String receive() {
+        byte[] buffer = new byte[MSG_SIZE];
+        DatagramPacket packet = new DatagramPacket(buffer, MSG_SIZE);
+        try {
+            socket.receive(packet);
+        } catch (SocketException e) {
+            System.out.println("shutting down...");
+        } catch (IOException e) {
+            System.err.println("socket receiving error " + e);
+        }
+        return new String(buffer);
+    }
+
+    //---------------------------------------------------------------------------
+    // This destructor closes socket to server
+    public void finalize() {
+        socket.close();
+    }
+
+    //---------------------------------------------------------------------------
+    // This function sends via socket message to the server
+    private void send(String message) {
+        byte[] buffer = Arrays.copyOf(message.getBytes(), MSG_SIZE);
+        try {
+            DatagramPacket packet = new DatagramPacket(buffer, MSG_SIZE, host, port);
+            socket.send(packet);
+        } catch (IOException e) {
+            System.err.println("socket sending error " + e);
+        }
+
+    }
+
+    private Perception getPerception() {
+        List<PlayView.PlayerView> perceptions = new ArrayList<>();
+        for (PlayView.PlayerView e : PlayView.PlayerView.values()) {
+            perceptions.add(e);
+        }
+        try {
+            return new Perception(perceptions);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    //---------------------------------------------------------------------------
+    // This function parses hear information
+    private void parseHear(String message)
+            throws IOException {
+        // get hear information
+        Matcher m = hearPattern.matcher(message);
+        int time;
+        String sender;
+        String uttered;
+        if (!m.matches()) {
+            throw new IOException(message);
+        }
+        time = Integer.parseInt(m.group(1));
+        sender = m.group(2);
+        uttered = m.group(3);
+        if (sender.compareTo("referee") == 0) {
+            brain.hear(time, uttered);
+        } else if (sender.compareTo("self") != 0) {
+            brain.hear(time, Integer.parseInt(sender), uttered);
+        }
+    }
 
     //---------------------------------------------------------------------------
     // This function sends move command to the server
@@ -184,6 +286,8 @@ public class Believer implements SendCommand {
     }
 
     //---------------------------------------------------------------------------
+
+    //---------------------------------------------------------------------------
     // This function sends change_view command to the server
     public void changeView(String angle, String quality) {
         send("(change_view " + angle + " " + quality + ")");
@@ -194,118 +298,6 @@ public class Believer implements SendCommand {
     public void bye() {
         playing = false;
         send("(bye)");
-    }
-
-    //---------------------------------------------------------------------------
-    // This function parses initial message from the server
-    protected void parseInitCommand(String message) throws IOException {
-        Matcher m = Pattern.compile("^\\(init\\s(\\w)\\s(\\d{1,2})\\s(\\w+?)\\).*$").matcher(message);
-        if (!m.matches()) {
-            throw new IOException(message);
-        }
-
-        // initialize player's brain
-        brain = new Brain(this,
-                team,
-                m.group(1).charAt(0),
-                Integer.parseInt(m.group(2)),
-                m.group(3),
-                getPerception());
-    }
-
-
-    //===========================================================================
-    // Here comes collection of communication function
-    //---------------------------------------------------------------------------
-    // This function sends initialization command to the server
-    private void init() {
-        send("(init " + team + " (version 9))");
-    }
-
-    //---------------------------------------------------------------------------
-    // This function parses sensor information
-    private void parseSensorInformation(String message) throws IOException {
-        // First check kind of information
-        Matcher m = messagePattern.matcher(message);
-        if (!m.matches()) {
-            throw new IOException(message);
-        }
-        if (m.group(1).compareTo("see") == 0) {
-            VisualInfo info = new VisualInfo(message);
-            info.parse();
-            brain.see(info);
-        } else if (m.group(1).compareTo("hear") == 0) {
-            parseHear(message);
-        }
-    }
-
-
-    //---------------------------------------------------------------------------
-    // This function parses hear information
-    private void parseHear(String message)
-            throws IOException {
-        // get hear information
-        Matcher m = hearPattern.matcher(message);
-        int time;
-        String sender;
-        String uttered;
-        if (!m.matches()) {
-            throw new IOException(message);
-        }
-        time = Integer.parseInt(m.group(1));
-        sender = m.group(2);
-        uttered = m.group(3);
-        if (sender.compareTo("referee") == 0) {
-            brain.hear(time, uttered);
-        }
-        else if (sender.compareTo("self") != 0) {
-            brain.hear(time, Integer.parseInt(sender), uttered);
-        }
-    }
-
-
-    //---------------------------------------------------------------------------
-    // This function sends via socket message to the server
-    private void send(String message) {
-        byte[] buffer = Arrays.copyOf(message.getBytes(), MSG_SIZE);
-        try {
-            DatagramPacket packet = new DatagramPacket(buffer, MSG_SIZE, host, port);
-            socket.send(packet);
-        } catch (IOException e) {
-            System.err.println("socket sending error " + e);
-        }
-
-    }
-
-    //---------------------------------------------------------------------------
-
-    // This function waits for new message from server
-    private String receive() {
-        byte[] buffer = new byte[MSG_SIZE];
-        DatagramPacket packet = new DatagramPacket(buffer, MSG_SIZE);
-        try {
-            socket.receive(packet);
-        } catch (SocketException e) {
-            System.out.println("shutting down...");
-        } catch (IOException e) {
-            System.err.println("socket receiving error " + e);
-        }
-        return new String(buffer);
-    }
-
-    private Perception getPerception(){
-        List<PlayView.PlayerView> perceptions = new ArrayList<>();
-        for (PlayView.PlayerView e : PlayView.PlayerView.values()){
-            perceptions.add(e);
-        }
-        try {
-            return new Perception(perceptions);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
 }

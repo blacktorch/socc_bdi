@@ -2,7 +2,7 @@
  * File:   Environment.java
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
- * **/
+ **/
 package robocup;
 
 import jason.asSyntax.Literal;
@@ -15,18 +15,18 @@ import java.util.Map;
  * perceptions from the players view**/
 
 public class Environment {
-    private Perception perception;
     private Brain brain;
+    private Perception perception;
 
-    public Environment(Perception perception, Brain brain){
+    public Environment(Perception perception, Brain brain) {
         this.perception = perception;
         this.brain = brain;
     }
 
-    public void updatePerceptions(){
+    public void updatePerceptions() {
         PlayView playView = new PlayView(brain);
-        for (Map.Entry<PlayView.PlayerView, Boolean> entry : perception.getIsPerceived().entrySet()){
-            switch (entry.getKey()){
+        for (Map.Entry<PlayView.PlayerView, Boolean> entry : perception.getIsPerceived().entrySet()) {
+            switch (entry.getKey()) {
                 case HAS_BALL:
                     perception.getIsPerceived().replace(entry.getKey(), entry.getValue(), playView.hasBall());
                     //System.out.println(entry.getKey().toString() + " : " + playView.hasBall());
@@ -88,13 +88,13 @@ public class Environment {
         brain.getPerceptions().clear();
         String perceptionID = String.valueOf(perception.getId());
 
-        for(PlayView.PlayerView condition : PlayView.PlayerView.values()){
-            if (perception.getIsPerceived().get(condition)){
+        for (PlayView.PlayerView condition : PlayView.PlayerView.values()) {
+            if (perception.getIsPerceived().get(condition)) {
                 brain.getPerceptions().add(Literal.parseLiteral(condition.name().toLowerCase()));
             }
         }
 
-        brain.getPerceptions().add(Literal.parseLiteral("id("+ perceptionID + ")"));
+        brain.getPerceptions().add(Literal.parseLiteral("id(" + perceptionID + ")"));
 
     }
 }

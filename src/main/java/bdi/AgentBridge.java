@@ -1,14 +1,14 @@
 package bdi;
 
-import robocup.Action;
-import robocup.Brain;
-import robocup.PlayView;
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
+import robocup.Action;
+import robocup.Brain;
+import robocup.PlayView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,12 @@ import java.util.logging.Logger;
 public class AgentBridge extends AgArch {
 
     private static Logger logger = Logger.getLogger(AgentBridge.class.getName());
-    PlayView playView;
-    private Brain brain;
+    private PlayView playView;
     private String agentName;
+    private Brain brain;
+    private boolean isActionDone;
     private boolean isNewPerception;
     private List<Literal> previousPerceptions;
-    private boolean isActionDone;
 
     public AgentBridge(Brain brain) {
         // set up the Jason agent
@@ -46,41 +46,22 @@ public class AgentBridge extends AgArch {
         }
     }
 
-    public void run() {
-        try {
-            while (isRunning()) {
-                // calls the Jason engine to perform one reasoning cycle
-                //logger.fine("Reasoning....");
-                getTS().reasoningCycle();
-                if (getTS().canSleep()) {
-                    sleep();
-                }
-            }
-        } catch (NullPointerException e) {
-            System.out.println("Waiting for next reasoning cycle...");
-        }
-    }
-
-    public String getAgName() {
-        return agentName;
-    }
-
     // this method just add some perception for the agent
     @Override
     public synchronized List<Literal> perceive() {
         brain.setPlayerPositions();
         ArrayList<Literal> l = new ArrayList<>(brain.getPerceptions());
-        if (l.equals(previousPerceptions)) {
-            isNewPerception = false;
-            //System.out.println("Old Perception");
-            //brain.updateAction(Action.Actions.DO_NOTHING, false);
-        } else {
-            isNewPerception = true;
-            //System.out.println("New Perception");
-        }
+        //System.out.println("Old Perception");
+        //brain.updateAction(Action.Actions.DO_NOTHING, false);
+        //System.out.println("New Perception");
+        isNewPerception = !l.equals(previousPerceptions);
         previousPerceptions = (List<Literal>) l.clone();
 
         return l;
+    }
+
+    @Override
+    public void checkMail() {
     }
 
     // this method get the agent actions
@@ -102,17 +83,8 @@ public class AgentBridge extends AgArch {
         return !isNewPerception;
     }
 
-    @Override
-    public boolean isRunning() {
-        return true;
-    }
-
-    // a very simple implementation of sleep
-    public void sleep() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-        }
+    public String getAgName() {
+        return agentName;
     }
 
     // Not used methods
@@ -126,7 +98,31 @@ public class AgentBridge extends AgArch {
     }
 
     @Override
-    public void checkMail() {
+    public boolean isRunning() {
+        return true;
+    }
+
+    public void run() {
+        try {
+            while (isRunning()) {
+                // calls the Jason engine to perform one reasoning cycle
+                //logger.fine("Reasoning....");
+                getTS().reasoningCycle();
+                if (getTS().canSleep()) {
+                    sleep();
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Waiting for next reasoning cycle...");
+        }
+    }
+
+    // a very simple implementation of sleep
+    public void sleep() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
     }
 
 }

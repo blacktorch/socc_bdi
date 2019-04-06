@@ -2,8 +2,9 @@
  * File:   StringBuilderWriter.java
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
- * **/
+ **/
 package robocup;
+
 import java.io.Serializable;
 import java.io.Writer;
 
@@ -22,9 +23,26 @@ public class StringBuilderWriter extends Writer implements Serializable {
         this.builder = builder != null ? builder : new StringBuilder();
     }
 
-    public Writer append(char value) {
-        this.builder.append(value);
-        return this;
+    public StringBuilder getBuilder() {
+        return this.builder;
+    }
+
+    public String toString() {
+        return this.builder.toString();
+    }
+
+    public void write(char[] value, int offset, int length) {
+        if (value != null) {
+            this.builder.append(value, offset, length);
+        }
+
+    }
+
+    public void write(String value) {
+        if (value != null) {
+            this.builder.append(value);
+        }
+
     }
 
     public Writer append(CharSequence value) {
@@ -37,31 +55,14 @@ public class StringBuilderWriter extends Writer implements Serializable {
         return this;
     }
 
-    public void close() {
+    public Writer append(char value) {
+        this.builder.append(value);
+        return this;
     }
 
     public void flush() {
     }
 
-    public void write(String value) {
-        if (value != null) {
-            this.builder.append(value);
-        }
-
-    }
-
-    public void write(char[] value, int offset, int length) {
-        if (value != null) {
-            this.builder.append(value, offset, length);
-        }
-
-    }
-
-    public StringBuilder getBuilder() {
-        return this.builder;
-    }
-
-    public String toString() {
-        return this.builder.toString();
+    public void close() {
     }
 }

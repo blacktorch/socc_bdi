@@ -21,25 +21,23 @@ import java.util.regex.Pattern;
 
 public class Brain extends Thread implements SensorInput {
 
-    //===========================================================================
-    // Private members
-    private SendCommand believer;          // robot which is controled by this brain
-    private Memory memory;                // place where all information is stored
-    private char side;
-    volatile private boolean timeOver;
-    private String playMode;
-    private int number;
-    private String team;
-    private Perception perception;
-    private long runNumber;
-    private Action.Actions actionToPerform;
-    private Action.Actions previousAction;
-    private boolean actionUpdated;
-    private List<Literal> perceptions;
-    private String playerName;
-    private boolean isGoalie;
     private long actionTimeStamp;
+    private Action.Actions actionToPerform;
+    private boolean actionUpdated;
+    private SendCommand believer;
+    private boolean isGoalie;
+    private Memory memory;
+    private int number;
+    private Perception perception;
+    private List<Literal> perceptions;
+    private String playMode;
+    private String playerName;
+    private Action.Actions previousAction;
     private String refereeMessage;
+    private long runNumber;
+    private char side;
+    private String team;
+    volatile private boolean timeOver;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -67,6 +65,51 @@ public class Brain extends Thread implements SensorInput {
 
     }
 
+    public Action.Actions getActionToPerform() {
+        return actionToPerform;
+    }
+
+    //===========================================================================
+    // Here are supporting functions for implement logic
+    public SendCommand getBeliever() {
+        return believer;
+    }
+
+    public Memory getMemory() {
+        return memory;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public synchronized List<Literal> getPerceptions() {
+        return perceptions;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public String getRefereeMessage() {
+        return refereeMessage;
+    }
+
+    public long getRunNumber() {
+        return runNumber;
+    }
+
+    public char getSide() {
+        return side;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public boolean isGoalie() {
+        return this.isGoalie;
+    }
 
     public void run() {
         setPlayerPositions();
@@ -79,21 +122,21 @@ public class Brain extends Thread implements SensorInput {
         while (!timeOver) {
 
             environment.updatePerceptions();
-            if (actionUpdated){
+            if (actionUpdated) {
 
-                if (actionToPerform != previousAction){
+                if (actionToPerform != previousAction) {
                     long newId = perception.getId();
                     newId++;
                     perception.setId(newId);
                 }
                 try {
-                    synchronized (action){
+                    synchronized (this) {
                         action.perform();
                     }
 
                     previousAction = actionToPerform;
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Failed to perform action");
                 }
 
@@ -112,50 +155,11 @@ public class Brain extends Thread implements SensorInput {
         believer.bye();
     }
 
-
-    //===========================================================================
-    // Here are supporting functions for implement logic
-    public SendCommand getBeliever(){
-        return believer;
-    }
-
-    public char getSide(){
-        return side;
-    }
-
-    public Memory getMemory(){
-        return memory;
-    }
-
-    public String getTeam(){
-        return team;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public long getRunNumber(){
-        return runNumber;
-    }
-
-    public String getPlayerName(){
-        return playerName;
-    }
-
-    public boolean isGoalie(){
-        return this.isGoalie;
-    }
-
-    public synchronized List<Literal> getPerceptions(){
-        return perceptions;
-    }
-
-    public void setPlayerPositions(){
+    public void setPlayerPositions() {
 
         // set player formation.
         if (Pattern.matches("^before_kick_off.*", playMode)) {
-            switch (number){
+            switch (number) {
                 case 1:
                     playerName = "Goalie";
                     isGoalie = true;
@@ -185,31 +189,26 @@ public class Brain extends Thread implements SensorInput {
         }
     }
 
-    private void startBDIEngine(){
+
+    //===========================================================================
+    // Implementation of SensorInput Interface
+
+    private void startBDIEngine() {
         try {
             new Thread(() -> {
                 AgentBridge agent = new AgentBridge(Brain.this);
                 agent.run();
             }).start();
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Encountered problem running agent reasoning!");
         }
     }
-
-    public String getRefereeMessage(){
-        return refereeMessage;
-    }
-
-
-    //===========================================================================
-    // Implementation of SensorInput Interface
 
     //---------------------------------------------------------------------------
     // This function sends see information
     public void see(VisualInfo info) {
         memory.store(info);
     }
-
 
     //---------------------------------------------------------------------------
     // This function receives hear information from player
@@ -227,14 +226,10 @@ public class Brain extends Thread implements SensorInput {
 
     }
 
-    public void updateAction(Action.Actions action, boolean isUpdated, long timeStamp){
+    public void updateAction(Action.Actions action, boolean isUpdated, long timeStamp) {
         actionToPerform = action;
         actionUpdated = isUpdated;
         actionTimeStamp = timeStamp;
-    }
-
-    public Action.Actions getActionToPerform(){
-        return actionToPerform;
     }
 
 }

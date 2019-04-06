@@ -2,7 +2,7 @@
  * File:   SoccerUtil.java
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
- * **/
+ **/
 package robocup;
 
 import java.io.*;
@@ -11,79 +11,6 @@ import java.util.List;
 public class SoccerUtil {
     private SoccerUtil() {
         //do not initialize...
-    }
-
-    public static ObjectInfo getOpponentsGoal(Memory memory, char side) {
-        if (side == Constants.LEFT) {
-            return memory.getObject(Constants.GOAL_RIGHT);
-        } else {
-            return memory.getObject(Constants.GOAL_LEFT);
-        }
-    }
-
-    public static ObjectInfo getOpponentsSide(Memory memory, char side) {
-        if (side == Constants.LEFT) {
-            return memory.getObject(Constants.LINE_RIGHT);
-        } else {
-            return memory.getObject(Constants.LINE_LEFT);
-        }
-    }
-
-    public static ObjectInfo getMyGoal(Memory memory, char side) {
-        if (side == Constants.LEFT) {
-            return memory.getObject(Constants.GOAL_LEFT);
-        } else {
-            return memory.getObject(Constants.GOAL_RIGHT);
-        }
-    }
-
-    public static ObjectInfo getGoalTop(Memory memory, char side, boolean isOpponent) {
-        char s = side;
-        if (isOpponent) {
-            s = setOpponentSide(side);
-        }
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
-    }
-
-    public static ObjectInfo getGoalBottom(Memory memory, char side , boolean isOpponent) {
-        char s = side;
-        if (isOpponent){
-            s = setOpponentSide(side);
-        }
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
-    }
-
-    public static ObjectInfo getPostTop(Memory memory, char side, boolean isOpponent) {
-        char s = side;
-        if (isOpponent){
-            s = setOpponentSide(side);
-        }
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
-    }
-
-    public static ObjectInfo getPostCentre(Memory memory, char side, boolean isOpponent) {
-        char s = side;
-        if (isOpponent){
-            s = setOpponentSide(side);
-        }
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.CENTRE);
-    }
-
-    public static ObjectInfo getPostBottom(Memory memory, char side, boolean isOpponent) {
-        char s = side;
-        if (isOpponent){
-            s = setOpponentSide(side);
-        }
-        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
-    }
-
-    public static PlayerInfo getTeamMember(Memory memory, String team){
-        PlayerInfo player = (PlayerInfo) memory.getObject(Constants.PLAYER);
-        if (player != null && player.getTeamName().equals(team)) {
-            return player;
-        } else {
-            return null;
-        }
     }
 
     public static boolean areAllTrue(List<Boolean> array) {
@@ -96,19 +23,9 @@ public class SoccerUtil {
         return true;
     }
 
-    public static String toString(InputStream input) throws IOException {
-        return toString((InputStream) input, (String) null);
-    }
-
-    public static String toString(InputStream input, String encoding) throws IOException {
-        StringBuilderWriter sw = new StringBuilderWriter();
-        copy((InputStream) input, (Writer) sw, encoding);
-        return sw.toString();
-    }
-
     public static void copy(InputStream input, Writer output) throws IOException {
         InputStreamReader in = new InputStreamReader(input);
-        copy((Reader) in, (Writer) output);
+        copy(in, output);
     }
 
     public static void copy(InputStream input, Writer output, String encoding) throws IOException {
@@ -116,7 +33,7 @@ public class SoccerUtil {
             copy(input, output);
         } else {
             InputStreamReader in = new InputStreamReader(input, encoding);
-            copy((Reader) in, (Writer) output);
+            copy(in, output);
         }
 
     }
@@ -138,6 +55,22 @@ public class SoccerUtil {
         return count;
     }
 
+    public static ObjectInfo getGoalBottom(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
+    }
+
+    public static ObjectInfo getGoalTop(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.GOAL + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
+    }
+
     private static char setOpponentSide(char side) {
 
         if (side == Constants.LEFT) {
@@ -146,5 +79,72 @@ public class SoccerUtil {
             side = Constants.LEFT;
         }
         return side;
+    }
+
+    public static ObjectInfo getMyGoal(Memory memory, char side) {
+        if (side == Constants.LEFT) {
+            return memory.getObject(Constants.GOAL_LEFT);
+        } else {
+            return memory.getObject(Constants.GOAL_RIGHT);
+        }
+    }
+
+    public static ObjectInfo getOpponentsGoal(Memory memory, char side) {
+        if (side == Constants.LEFT) {
+            return memory.getObject(Constants.GOAL_RIGHT);
+        } else {
+            return memory.getObject(Constants.GOAL_LEFT);
+        }
+    }
+
+    public static ObjectInfo getOpponentsSide(Memory memory, char side) {
+        if (side == Constants.LEFT) {
+            return memory.getObject(Constants.LINE_RIGHT);
+        } else {
+            return memory.getObject(Constants.LINE_LEFT);
+        }
+    }
+
+    public static ObjectInfo getPostBottom(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.BOTTOM);
+    }
+
+    public static ObjectInfo getPostCentre(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.CENTRE);
+    }
+
+    public static ObjectInfo getPostTop(Memory memory, char side, boolean isOpponent) {
+        char s = side;
+        if (isOpponent) {
+            s = setOpponentSide(side);
+        }
+        return memory.getObject(Constants.FLAG + Constants.SPACE + Constants.POST + Constants.SPACE + s + Constants.SPACE + Constants.TOP);
+    }
+
+    public static PlayerInfo getTeamMember(Memory memory, String team) {
+        PlayerInfo player = (PlayerInfo) memory.getObject(Constants.PLAYER);
+        if (player != null && player.getTeamName().equals(team)) {
+            return player;
+        } else {
+            return null;
+        }
+    }
+
+    public static String toString(InputStream input) throws IOException {
+        return toString(input, null);
+    }
+
+    public static String toString(InputStream input, String encoding) throws IOException {
+        StringBuilderWriter sw = new StringBuilderWriter();
+        copy(input, sw, encoding);
+        return sw.toString();
     }
 }
