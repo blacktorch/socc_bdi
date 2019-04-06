@@ -4,3 +4,4 @@
 *.rcg
 *.rcl
 */target/*
+*.idea/*
