@@ -1,8 +1,8 @@
-package BDI;
+package bdi;
 
-import RoboCup.Action;
-import RoboCup.Brain;
-import RoboCup.PlayView;
+import robocup.Action;
+import robocup.Brain;
+import robocup.PlayView;
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Example of an agent that only uses Jason BDI engine. It runs without all
+ * Example of an agent that only uses Jason bdi engine. It runs without all
  * Jason IDE stuff. (see Jason FAQ for more information about this example)
  * <p>
  * The class must extend AgArch class to be used by the Jason engine.

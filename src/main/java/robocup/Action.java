@@ -4,13 +4,13 @@
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
  * **/
-package RoboCup;
+package robocup;
 
 import java.util.List;
 
 /**
  * The Action class has various methods
- * that the RoboCup agents uses to perform various actions.
+ * that the robocup agents uses to perform various actions.
  * The names of the methods vividly describes the actions
  * **/
 

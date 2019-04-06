@@ -19,7 +19,7 @@
 //	about objects
 //
 //***************************************************************************
-package RoboCup;
+package robocup;
 class ObjectInfo
 {
   public String type;

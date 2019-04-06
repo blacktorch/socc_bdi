@@ -2296,7 +2296,7 @@
   LGPL (except for rcssmonitor which is under GPL), so if you do use modified
   server code in you clients, you *must* release these modifications when you
   release your binary. Earlier and more frequent releases would be more than
-  welcome.  Hopefully this way we can start some sort of Standard RoboCup
+  welcome.  Hopefully this way we can start some sort of Standard robocup
   Library (SRCLib).
 
   * Added support for arithmetic on points within CLang messages.  Points can

@@ -7,7 +7,7 @@
  * Updated by: Onyedinma Chidiebere
  * Date:   05/04/19
  * **/
-package RoboCup;
+package robocup;
 class Memory {
     //---------------------------------------------------------------------------
     // This constructor:

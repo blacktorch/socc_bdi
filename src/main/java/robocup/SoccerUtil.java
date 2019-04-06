@@ -3,7 +3,7 @@
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
  * **/
-package RoboCup;
+package robocup;
 
 import java.io.*;
 import java.util.List;

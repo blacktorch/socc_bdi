@@ -3,7 +3,7 @@
  * Author: Onyedinma Chidiebere
  * Date:   05/04/19
  * **/
-package RoboCup;
+package robocup;
 
 import jason.asSyntax.Literal;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * The Environment class gets the latest perceptions
- * from the RoboCup server. It uses the PlayView class to obtain
+ * from the robocup server. It uses the PlayView class to obtain
  * perceptions from the players view**/
 
 public class Environment {

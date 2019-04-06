@@ -2,7 +2,7 @@
 INTRODUCTION
 ============
 
-The RoboCup Soccer Simulator Server (rcssserver) is a research and educational
+The robocup Soccer Simulator Server (rcssserver) is a research and educational
 tool for mutli-agent systems and artificial intelligence. It allows 11
 simulated autonomous robotic players to play soccer (football).
 
@@ -38,7 +38,7 @@ downloaded separately.
 CONFIGURING
 ===========
 
-Before you can build The RoboCup Soccer Simulator Server you will need to run
+Before you can build The robocup Soccer Simulator Server you will need to run
 the `configure' script located in the root of the distribution directory.
 
 The default configuration will set up to install the server components in
@@ -146,4 +146,4 @@ For bug reports, feature requests and latest updates, please goto
 	https://github.com/rcsoccersim/rcssserver
 
 --
-The RoboCup Soccer Server Maintainance Group
+The robocup Soccer Server Maintainance Group

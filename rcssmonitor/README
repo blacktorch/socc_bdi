@@ -2,7 +2,7 @@
 INTRODUCTION
 ============
 
-The RoboCup Soccer Simulator Monitor (rcssmonitor) is used to view the
+The robocup Soccer Simulator Monitor (rcssmonitor) is used to view the
 simulation as it takes place by connecting to the rcssserver or to
 view the playback of a simulation by connecting to the
 rcsslogplayer.
@@ -22,7 +22,7 @@ This will built the neccesary binaries to get you up and running.
 CONFIGURING
 ===========
 
-Before you can build The RoboCup Soccer Simulator Monitor you will
+Before you can build The robocup Soccer Simulator Monitor you will
 need to run the `configure' script located in the root of the
 distribution directory.
 
@@ -92,5 +92,5 @@ For bug reports, feature requests and latest updates, please goto
 or email bugs to
 	sserver-bugs@lists.sourceforge.net
 
-The RoboCup Soccer Server Maintainance Group
+The robocup Soccer Server Maintainance Group
 	sserver-admin@lists.sourceforge.net

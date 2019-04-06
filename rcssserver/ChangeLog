@@ -7802,8 +7802,8 @@
 	The server now renames the text logs and game logs to
 	`<TEAM_L>_<TEAM_L_POINTS>-vs-<TEAM_R>_<TEAM_R_POINTS>.rcl' and
 	`<TEAM_L>_<TEAM_L_POINTS>-vs-<TEAM_R>_<TEAM_R_POINTS>.rcg'
-	respectively. `rcl' stands for `RoboCup Command Log'. `rcg' stands for
-	`RoboCup Game'.
+	respectively. `rcl' stands for `robocup Command Log'. `rcg' stands for
+	`robocup Game'.
 
 	The Log files are saved in the directories specified by
 	the `text_log_dir' and `game_log_dir' parameters respectively.
@@ -8601,7 +8601,7 @@
 
 [5.19]
   * The value of half_time in server.conf is corrected for
-    the RoboCup-99's regulation.
+    the robocup-99's regulation.
   * Fix a bug of logplayer. (Patched by Gerhard Sander).
   * Add rec_msg_mode flag to the server to reduce the size of logfile
     (Contributed by Patrick F. Riley).
@@ -8624,7 +8624,7 @@
   * All information of "sense_body" and "see" reflects values after the server
     commits the commands at the end of a simulation cycle.
   * The values of stamina_max and stamina_inc_max in the default "server.conf"
-    file are set for RoboCup-99's regulations.
+    file are set for robocup-99's regulations.
   * Limit the value of turn_neck and angle_neck.
 
 [5.17]
@@ -8881,7 +8881,7 @@
   * Small modification was done just for distribution.
 
 [4.12]
-  * Used RoboCup Japan Open 98.
+  * Used robocup Japan Open 98.
   * When offside rule is applied, the server restarts the game
     from the point where the offside player received the ball.
     In the previous implementation, the server restarts the game
@@ -9150,7 +9150,7 @@
     with '-record_log off' option.
   * Logplayer accepts multiple monitor.
 
-[3.23--3.28] (These modification was done on site of RoboCup-97 :-)
+[3.23--3.28] (These modification was done on site of robocup-97 :-)
   * Force players in their own sides before kick-off.
   * Change to use larger fonts.
 
@@ -9178,7 +9178,7 @@
     ball_size and player_size.
 
 [3.17]
-  * Now, an image appears on the field.  By default, RoboCup logo appears.
+  * Now, an image appears on the field.  By default, robocup logo appears.
     The image file is monitor/mark.xbm.
     You can turn off this facility by specifying "print_mark off" option
     on the command line or configulation file for soccermonitor.
@@ -9285,7 +9285,7 @@
   * Fix a bug of information about near-objects.
     In version 3.03, information about near-objects (objects near to the
     player and out of view-cone) includes dist_change and dir_change.
-    This is not fit to the regulation for RoboCup-97.  Now, the server
+    This is not fit to the regulation for robocup-97.  Now, the server
     only sends distance and direction about near-objects.
   * Change the value of kick_power_rate in server.conf from 0.02 to 0.013,
     because a player can shoot the ball to a goal from the center circle
