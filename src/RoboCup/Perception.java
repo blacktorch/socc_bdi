@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Perception class uses all possible perceptions
+ * as defined in the PlayerView enum declared in the PlayView class
+ * and maps them to their equivalent boolean values
+ * **/
+
 public class Perception {
     private Map<PlayView.PlayerView, Boolean> isPerceived = new HashMap<>();
     private long id;

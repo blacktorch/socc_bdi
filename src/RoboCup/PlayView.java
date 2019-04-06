@@ -16,16 +16,12 @@ public class PlayView {
     private String team;
     private char side;
     private boolean isGoalie;
-    private SendCommand player;
-    private int number;
 
     public PlayView(Brain brain){
         this.memory = brain.getMemory();
         this.team = brain.getTeam();
         this.side = brain.getSide();
         this.isGoalie = brain.isGoalie();
-        player = brain.getBeliever();
-        number = brain.getNumber();
     }
 
     public boolean canSeeBall(){

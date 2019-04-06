@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Example of an agent that only uses Jason BDI engine. It runs without all
- * Jason IDE stuff. (see Jason FAQ for more information about this example)
+ * This is a simple Jason Agent that bridges the RoboCup Server and the
+ * Jason BDI engine.
  * <p>
- * The class must extend AgArch class to be used by the Jason engine.
+ * The class extends AgArch class to be used by the Jason engine.
  */
 public class AgentBridge extends AgArch {
 
@@ -29,7 +29,6 @@ public class AgentBridge extends AgArch {
     private String agentName;
     private boolean isNewPerception;
     private List<Literal> previousPerceptions;
-    private boolean isActionDone;
 
     public AgentBridge(Brain brain) {
         // set up the Jason agent
@@ -50,7 +49,7 @@ public class AgentBridge extends AgArch {
         try {
             while (isRunning()) {
                 // calls the Jason engine to perform one reasoning cycle
-                //logger.fine("Reasoning....");
+                logger.fine("Reasoning....");
                 getTS().reasoningCycle();
                 if (getTS().canSleep()) {
                     sleep();
@@ -72,11 +71,8 @@ public class AgentBridge extends AgArch {
         ArrayList<Literal> l = new ArrayList<>(brain.getPerceptions());
         if (l.equals(previousPerceptions)) {
             isNewPerception = false;
-            //System.out.println("Old Perception");
-            //brain.updateAction(Action.Actions.DO_NOTHING, false);
         } else {
             isNewPerception = true;
-            //System.out.println("New Perception");
         }
         previousPerceptions = (List<Literal>) l.clone();
 
