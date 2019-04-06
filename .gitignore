@@ -3,5 +3,5 @@
 *.jar
 *.rcg
 *.rcl
-*/target/*
-*.idea/*
+target/
+.idea/
