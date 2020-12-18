@@ -3,6 +3,7 @@ package bdi;
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
+import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
@@ -11,6 +12,7 @@ import robocup.Brain;
 import robocup.PlayView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,15 +64,21 @@ public class AgentBridge extends AgArch {
 
     @Override
     public void checkMail() {
+        super.checkMail();
+        Iterator im = getTS().getC().getMailBox().iterator();
+        while (im.hasNext()) {
+            Message m = (Message) im.next();
+            System.out.println(m.toString());
+        }
     }
 
     // this method get the agent actions
     @Override
     public synchronized void act(ActionExec action) {
-        getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
+        //getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
 
         Structure actionTerm = action.getActionTerm();
-        System.out.println(actionTerm.toString());
+        //System.out.println(actionTerm.toString());
 
         brain.updateAction(Action.Actions.valueOf(actionTerm.toString().toUpperCase()), true, System.currentTimeMillis());
         // set that the execution was ok

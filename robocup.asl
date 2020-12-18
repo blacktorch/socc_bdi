@@ -13,7 +13,8 @@
             <- !makePlayDecision.
 
 +is_goalie : true
-           <- !protectGoal.
+           <- !protectGoal;
+           .send(Griffin,tell,iam_goalie).
 
 +ball_in_goal_area : is_goalie
                      <- !protectGoal.

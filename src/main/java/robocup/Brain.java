@@ -198,6 +198,7 @@ public class Brain extends Thread implements SensorInput {
             new Thread(() -> {
                 AgentBridge agent = new AgentBridge(Brain.this);
                 agent.run();
+                System.out.println("Agent Running!");
             }).start();
         } catch (Exception e) {
             System.out.println("Encountered problem running agent reasoning!");
